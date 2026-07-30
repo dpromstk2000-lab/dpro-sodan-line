@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#123f55">
+  <title>DPRO SODAN iPad管理</title>
+  <script src="config.js"></script>
+  <style>
+    :root{--nav:#123f55;--nav2:#315f72;--bg:#eef5f6;--card:#fff;--line:#c9dadd;--text:#082b39;--muted:#647b84;--green:#0b746f;--danger:#b42318;--warn:#8a5700}
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;color:var(--text);background:var(--bg)}
+    button,input,select,textarea{font:inherit}button{touch-action:manipulation}
+    .hidden{display:none!important}.app{min-height:100vh;display:grid;grid-template-columns:230px 1fr}
+    .side{background:var(--nav);color:#fff;padding:20px 14px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+    .brand{font-size:22px;font-weight:900;letter-spacing:.02em}.sub{opacity:.8;margin:4px 0 22px}
+    .nav{display:grid;gap:8px}.nav button,.nav a{border:0;background:transparent;color:#fff;text-align:left;padding:14px;border-radius:10px;font-weight:800;text-decoration:none}
+    .nav button.active,.nav button:hover,.nav a:hover{background:var(--nav2)}
+    .account{margin-top:auto}.account div{margin-bottom:10px;font-weight:800}.logout{width:100%;padding:13px;border:0;border-radius:10px;background:#fff;color:var(--text);font-weight:900}
+    .main{min-width:0}.top{background:#fff;border-bottom:1px solid var(--line);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:5}
+    h1{font-size:24px;margin:0}.top small{display:block;color:var(--muted);margin-top:3px}.top-actions{display:flex;gap:8px}
+    .btn{border:1px solid #96b7bf;background:#fff;color:var(--text);border-radius:9px;padding:12px 15px;font-weight:800}.btn.primary{background:var(--green);border-color:var(--green);color:#fff}.btn:disabled{opacity:.55}
+    .content{padding:18px;max-width:1500px;margin:auto}.status{display:none;padding:12px 14px;border-radius:9px;margin-bottom:14px;font-weight:700}.status.show{display:block}.status.success{background:#e8f8ef;border:1px solid #a8ddbd;color:#075e37}.status.error{background:#fff0ee;border:1px solid #f0b4ad;color:#8f1d12}
+    .metrics{display:grid;grid-template-columns:repeat(5,minmax(125px,1fr));gap:10px;margin-bottom:14px}.metric{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px}.metric span{color:var(--muted);font-size:14px}.metric b{display:block;font-size:30px;margin-top:5px}.metric.alert b{color:var(--danger)}
+    .grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(360px,.85fr);gap:14px}.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:15px;min-width:0}.card h2{font-size:20px;margin:0 0 12px}
+    .list{display:grid;gap:9px}.item{border:1px solid var(--line);border-radius:10px;padding:12px;background:#fff}.item.click{cursor:pointer;text-align:left;width:100%}.item.click:active{transform:scale(.995)}
+    .row{display:flex;align-items:center;justify-content:space-between;gap:10px}.muted{color:var(--muted);font-size:13px}.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#e8f2f3;font-size:12px;font-weight:800}.badge.overdue{background:#fff0ee;color:var(--danger)}.badge.warn{background:#fff6d9;color:var(--warn)}
+    .filters{display:grid;grid-template-columns:1fr 170px auto;gap:8px;margin-bottom:12px}.filters input,.filters select,.form input,.form select,.form textarea{width:100%;border:1px solid #9ebbc2;border-radius:8px;padding:11px;background:#fff}.form{display:grid;gap:11px}.form label{font-weight:800}.form textarea{min-height:95px;resize:vertical}
+    .detail-head{display:flex;justify-content:space-between;align-items:start;gap:10px}.detail-head h2{margin-bottom:5px}.facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}.fact{background:#f4f8f8;border-radius:9px;padding:10px}.fact span{display:block;color:var(--muted);font-size:12px}.fact b{display:block;margin-top:4px;word-break:break-word}
+    .empty{background:#f4f8f8;border-radius:9px;padding:18px;color:var(--muted)}.login-wrap{min-height:100vh;display:grid;place-items:center;padding:20px}.login{width:min(440px,100%);background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px}.login h1{margin-bottom:6px}.login input{width:100%;padding:13px;border:1px solid #9ebbc2;border-radius:9px;margin:16px 0 10px}
+    .version{text-align:center;color:var(--muted);font-size:12px;padding:18px}
+    @media(max-width:1050px){.app{grid-template-columns:190px 1fr}.metrics{grid-template-columns:repeat(3,1fr)}.grid{grid-template-columns:1fr}.side{padding:16px 10px}.brand{font-size:19px}}
+    @media(max-width:760px){.app{display:block}.side{height:auto;position:static;padding:12px}.brand,.sub,.account{display:none}.nav{display:flex;overflow-x:auto;gap:6px}.nav button,.nav a{white-space:nowrap;padding:11px}.top{position:static;padding:13px}.top-actions .btn:first-child{display:none}.content{padding:10px}.metrics{grid-template-columns:repeat(2,1fr)}.metric b{font-size:25px}.filters{grid-template-columns:1fr}.facts{grid-template-columns:1fr}.grid{display:block}.grid>.card{margin-bottom:10px}}
+  </style>
+</head>
+<body>
+  <section id="loginView" class="login-wrap">
+    <form id="loginForm" class="login">
+      <h1>DPRO SODAN</h1><div class="muted">iPad管理画面</div>
+      <input id="adminCode" type="password" inputmode="numeric" autocomplete="current-password" placeholder="管理コード" aria-label="管理コード">
+      <button class="btn primary" style="width:100%" type="submit">ログイン</button>
+      <div id="loginStatus" class="status"></div>
+    </form>
+  </section>
+
+  <section id="appView" class="app hidden">
+    <aside class="side">
+      <div class="brand">DPRO SODAN</div><div class="sub">iPad管理</div>
+      <nav class="nav">
+        <button data-view="today" class="active">今日</button>
+        <button data-view="inquiries">相談受付</button>
+        <button data-view="cases">利用者・案件</button>
+        <a href="owner.html">PC管理</a>
+      </nav>
+      <div class="account"><div id="accountName">管理者</div><button id="logout" class="logout">ログアウト</button></div>
+    </aside>
+    <main class="main">
+      <header class="top">
+        <div><h1 id="pageTitle">今日の管理</h1><small>DPRO相談支援センター（デモ）</small></div>
+        <div class="top-actions"><button id="pcLink" class="btn">PC管理へ</button><button id="refresh" class="btn primary">最新情報に更新</button></div>
+      </header>
+      <div class="content">
+        <div id="globalStatus" class="status"></div>
+
+        <section id="todayView">
+          <div id="metrics" class="metrics"></div>
+          <div class="grid">
+            <div class="card"><h2>新しい相談受付</h2><div id="recentInquiries" class="list"></div></div>
+            <div class="card"><h2>本日の面談・訪問</h2><div id="todayAppointments" class="list"></div></div>
+          </div>
+          <div class="card" style="margin-top:14px"><h2>期限・未対応アラート</h2><div id="alerts" class="list"></div></div>
+        </section>
+
+        <section id="inquiriesView" class="hidden">
+          <div class="filters"><input id="inquiryQ" placeholder="氏名・電話・受付番号"><select id="inquiryStatus"><option value="">対応中すべて</option><option value="new">新規</option><option value="contacting">確認中</option><option value="converted">案件化済み</option></select><button id="searchInquiries" class="btn primary">表示</button></div>
+          <div class="grid"><div class="card"><h2>相談受付</h2><div id="inquiryList" class="list"></div></div><div class="card" id="inquiryDetail"><div class="empty">左の相談受付を選択してください。</div></div></div>
+        </section>
+
+        <section id="casesView" class="hidden">
+          <div class="filters"><input id="caseQ" placeholder="氏名・電話・利用者番号・案件番号"><select id="caseStatus"><option value="">進行中すべて</option><option value="new">新規相談</option><option value="assessment">アセスメント中</option><option value="plan_drafting">計画案作成中</option><option value="in_service">サービス利用中</option></select><button id="searchCases" class="btn primary">表示</button></div>
+          <div class="grid"><div class="card"><h2>利用者・案件</h2><div id="caseList" class="list"></div></div><div class="card" id="caseDetail"><div class="empty">左の案件を選択してください。</div></div></div>
+        </section>
+        <div class="version" id="version"></div>
+      </div>
+    </main>
+  </section>
+
+<script>
+(() => {
+  const cfg=window.DPRO_CONFIG||{}, API=cfg.workerUrl||cfg.API_BASE||'', $=id=>document.getElementById(id);
+  const state={token:sessionStorage.getItem('sodan_owner_token')||'',session:null,staff:[],currentInquiry:null,currentCase:null,view:'today'};
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const fmt=v=>{if(!v)return'—';const d=new Date(v);return Number.isFinite(d.getTime())?new Intl.DateTimeFormat('ja-JP',{timeZone:'Asia/Tokyo',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}).format(d):esc(v)};
+  const badge=v=>`<span class="badge">${esc(({new:'新規',contacting:'確認中',converted:'案件化済み',assessment:'アセスメント中',plan_drafting:'計画案作成中',in_service:'サービス利用中',normal:'通常',urgent:'緊急'}[v]||v||'—'))}</span>`;
+  function status(id,msg,type='success'){const e=$(id);e.textContent=msg;e.className=`status show ${type}`;if(type==='success')setTimeout(()=>{if(e.textContent===msg)e.className='status'},3000)}
+  async function api(path,opt={}){const h={'Content-Type':'application/json',...(state.token?{Authorization:`Bearer ${state.token}`}:{}) ,...(opt.headers||{})};const r=await fetch(API+path,{method:opt.method||'GET',headers:h,body:opt.body?JSON.stringify(opt.body):undefined});let d={};try{d=await r.json()}catch{}if(!r.ok)throw new Error(d.error||d.message||`通信エラー ${r.status}`);return d}
+  async function login(code){const d=await api('/api/auth/admin/login',{method:'POST',body:{adminCode:code,staffCode:'DEMO-ADMIN'}});state.token=d.accessToken;state.session=d.session;sessionStorage.setItem('sodan_owner_token',state.token)}
+  async function validate(){if(!state.token)return false;try{const d=await api('/api/auth/session');state.session=d.session;return true}catch{return false}}
+  async function loadStaff(){const d=await api('/api/admin/staff');state.staff=d.staff||[]}
+  const staffOptions=(selected='')=>'<option value="">未割当</option>'+state.staff.map(s=>`<option value="${esc(s.id)}" ${s.id===selected?'selected':''}>${esc(s.displayName)}</option>`).join('');
+
+  async function loadDashboard(){
+    const d=await api('/api/admin/dashboard'),x=d.dashboard;
+    $('metrics').innerHTML=[['新規相談',x.counts.newInquiries],['対応中相談',x.counts.activeInquiries],['本日の予定',x.counts.todayAppointments],['LINE承認待ち',x.counts.pendingLineLinks],['期限超過',x.counts.overdue,'alert']].map(v=>`<div class="metric ${v[2]||''}"><span>${v[0]}</span><b>${v[1]}</b></div>`).join('');
+    $('recentInquiries').innerHTML=x.recentInquiries.length?x.recentInquiries.map(i=>`<button class="item click" data-i="${esc(i.id)}"><div class="row"><b>${esc(i.inquiryNo)} ${esc(i.requesterName)}</b>${badge(i.urgency)}</div><div class="muted">${fmt(i.createdAt)}／${badge(i.status)}</div><div>${esc(i.summary)}</div></button>`).join(''):'<div class="empty">新しい相談受付はありません。</div>';
+    $('todayAppointments').innerHTML=x.todayAppointments.length?x.todayAppointments.map(a=>`<div class="item"><div class="row"><b>${fmt(a.startAt)} ${esc(a.location||'')}</b>${badge(a.status)}</div><div>${esc(a.publicNote||'予定')}</div></div>`).join(''):'<div class="empty">本日の面談・訪問はありません。</div>';
+    const alerts=[...(x.alerts.inquiries||[]).map(i=>`相談 ${i.inquiryNo} ${i.requesterName}`),...(x.alerts.tasks||[]).map(t=>`タスク ${t.taskNo} ${t.title}`),...(x.alerts.documents||[]).map(v=>`書類 ${v.requestNo} ${v.title}`),...(x.alerts.monitorings||[]).map(m=>`モニタリング ${m.monitoringNo}`)];
+    $('alerts').innerHTML=alerts.length?alerts.map(v=>`<div class="item"><span class="badge overdue">期限超過</span> ${esc(v)}</div>`).join(''):'<div class="empty">期限超過はありません。</div>';
+    document.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{switchView('inquiries');openInquiry(b.dataset.i)});
+  }
+  async function loadInquiries(){
+    const p=new URLSearchParams({q:$('inquiryQ').value.trim(),status:$('inquiryStatus').value});
+    const d=await api('/api/admin/inquiries?'+p);
+    $('inquiryList').innerHTML=d.inquiries.length?d.inquiries.map(i=>`<button class="item click" data-inquiry="${esc(i.id)}"><div class="row"><b>${esc(i.inquiryNo)} ${esc(i.requesterName)}</b>${badge(i.status)}</div><div class="muted">${esc(i.requesterPhone||'')}／担当 ${esc(i.assignedStaffName||'未割当')}</div><div>${esc(i.summary||'')}</div></button>`).join(''):'<div class="empty">該当する相談受付はありません。</div>';
+    document.querySelectorAll('[data-inquiry]').forEach(b=>b.onclick=()=>openInquiry(b.dataset.inquiry));
+  }
+  async function openInquiry(id){
+    const d=await api(`/api/admin/inquiries/${id}`),i=d.inquiry;state.currentInquiry=i;
+    $('inquiryDetail').innerHTML=`<div class="detail-head"><div><h2>${esc(i.inquiryNo)}</h2>${badge(i.status)}</div></div>
+      <div class="facts"><div class="fact"><span>相談者</span><b>${esc(i.requesterName)}</b></div><div class="fact"><span>電話</span><b>${esc(i.requesterPhone||'—')}</b></div><div class="fact"><span>受付</span><b>${fmt(i.createdAt)}</b></div><div class="fact"><span>緊急度</span><b>${esc(i.urgency||'—')}</b></div></div>
+      <div class="item">${esc(i.summary||'')}</div>
+      <div class="form" style="margin-top:12px"><label>状態<select id="editInquiryStatus"><option value="new">新規</option><option value="contacting">確認中</option><option value="converted">案件化済み</option></select></label><label>担当相談員<select id="editInquiryStaff">${staffOptions(i.assignedStaffId)}</select></label><label>対応記録<textarea id="editInquiryNote" placeholder="電話連絡、折返し、説明内容など"></textarea></label><button id="saveInquiry" class="btn primary">状態・担当を保存</button></div>`;
+    $('editInquiryStatus').value=i.status;
+    $('saveInquiry').onclick=saveInquiry;
+  }
+  async function saveInquiry(){
+    const i=state.currentInquiry,b=$('saveInquiry');b.disabled=true;
+    try{await api(`/api/admin/inquiries/${i.id}/update`,{method:'POST',body:{lockVersion:i.lockVersion,status:$('editInquiryStatus').value,assignedStaffId:$('editInquiryStaff').value||null,contactNote:$('editInquiryNote').value.trim(),contactChannel:'internal',contactDirection:'internal'}});status('globalStatus','相談受付を更新しました。');await Promise.all([loadInquiries(),loadDashboard()]);await openInquiry(i.id)}catch(e){status('globalStatus',e.message,'error')}finally{b.disabled=false}
+  }
+  async function loadCases(){
+    const p=new URLSearchParams({q:$('caseQ').value.trim(),status:$('caseStatus').value});
+    const d=await api('/api/admin/cases?'+p);
+    $('caseList').innerHTML=d.cases.length?d.cases.map(c=>`<button class="item click" data-case="${esc(c.id)}"><div class="row"><b>${esc(c.caseNo)} ${esc(c.client?.name||'')}</b>${badge(c.status)}</div><div class="muted">${esc(c.client?.clientNo||'')}／担当 ${esc(c.assignedStaffName||'未割当')}</div><div>次の対応：${esc(c.nextAction||'未登録')}</div></button>`).join(''):'<div class="empty">該当する案件はありません。</div>';
+    document.querySelectorAll('[data-case]').forEach(b=>b.onclick=()=>openCase(b.dataset.case));
+  }
+  async function openCase(id){
+    const d=await api(`/api/admin/cases/${id}`),c=d.case;state.currentCase=d;
+    $('caseDetail').innerHTML=`<div class="detail-head"><div><h2>${esc(c.caseNo)}</h2>${badge(c.status)}</div></div>
+      <div class="facts"><div class="fact"><span>利用者</span><b>${esc(c.client?.clientNo||'')} ${esc(c.client?.name||'')}</b></div><div class="fact"><span>電話</span><b>${esc(c.client?.phone||'—')}</b></div><div class="fact"><span>担当</span><b>${esc(c.assignedStaffName||'未割当')}</b></div><div class="fact"><span>次回期限</span><b>${fmt(c.nextActionDueAt)}</b></div></div>
+      <div class="form"><label>案件状態<select id="editCaseStatus"><option value="new">新規相談</option><option value="assessment">アセスメント中</option><option value="plan_drafting">計画案作成中</option><option value="in_service">サービス利用中</option></select></label><label>担当相談員<select id="editCaseStaff">${staffOptions(c.assignedStaffId)}</select></label><label>次の対応<input id="editCaseNext" value="${esc(c.nextAction||'')}"></label><label>次回対応期限<input id="editCaseDue" type="datetime-local"></label><button id="saveCase" class="btn primary">案件情報を保存</button></div>`;
+    $('editCaseStatus').value=c.status;
+    if(c.nextActionDueAt){const dte=new Date(c.nextActionDueAt);$('editCaseDue').value=new Date(dte.getTime()-dte.getTimezoneOffset()*60000).toISOString().slice(0,16)}
+    $('saveCase').onclick=saveCase;
+  }
+  async function saveCase(){
+    const c=state.currentCase.case,b=$('saveCase');b.disabled=true;
+    try{await api(`/api/admin/cases/${c.id}/update`,{method:'POST',body:{lockVersion:c.lockVersion,status:$('editCaseStatus').value,assignedStaffId:$('editCaseStaff').value||null,secondaryStaffId:c.secondaryStaffId||null,nextAction:$('editCaseNext').value.trim(),nextActionDueAt:$('editCaseDue').value?new Date($('editCaseDue').value).toISOString():null,contractedOn:c.contractedOn||null,serviceStartedOn:c.serviceStartedOn||null,internalSummary:c.internalSummary||''}});status('globalStatus','案件情報を保存しました。');await Promise.all([loadCases(),loadDashboard()]);await openCase(c.id)}catch(e){status('globalStatus',e.message,'error')}finally{b.disabled=false}
+  }
+  function switchView(view){
+    state.view=view;['today','inquiries','cases'].forEach(v=>$(v+'View').classList.toggle('hidden',v!==view));
+    document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===view));
+    $('pageTitle').textContent={today:'今日の管理',inquiries:'相談受付',cases:'利用者・案件'}[view];
+    if(view==='today')loadDashboard().catch(e=>status('globalStatus',e.message,'error'));
+    if(view==='inquiries')loadInquiries().catch(e=>status('globalStatus',e.message,'error'));
+    if(view==='cases')loadCases().catch(e=>status('globalStatus',e.message,'error'));
+  }
+  async function initial(){
+    $('accountName').textContent=state.session?.displayName||'山田 管理者';
+    await loadStaff();await loadDashboard();
+    $('loginView').classList.add('hidden');$('appView').classList.remove('hidden')
+  }
+  $('loginForm').onsubmit=async e=>{e.preventDefault();try{await login($('adminCode').value.trim());await initial()}catch(err){status('loginStatus',err.message,'error')}};
+  $('logout').onclick=()=>{sessionStorage.removeItem('sodan_owner_token');location.reload()};
+  $('pcLink').onclick=()=>location.href='owner.html';
+  $('refresh').onclick=()=>switchView(state.view);
+  $('searchInquiries').onclick=loadInquiries;$('searchCases').onclick=loadCases;
+  document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>switchView(b.dataset.view));
+  $('version').textContent=cfg.WEB_VERSION||'SODAN-11-WEB-20260730';
+  (async()=>{if(await validate())await initial()})()
+})();
+</script>
+</body>
+</html>
