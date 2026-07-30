@@ -26,7 +26,7 @@
     .row{display:flex;align-items:center;justify-content:space-between;gap:10px}.muted{color:var(--muted);font-size:13px}.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#e8f2f3;font-size:12px;font-weight:800}.badge.overdue{background:#fff0ee;color:var(--danger)}.badge.warn{background:#fff6d9;color:var(--warn)}
     .filters{display:grid;grid-template-columns:1fr 170px auto;gap:8px;margin-bottom:12px}.filters input,.filters select,.form input,.form select,.form textarea{width:100%;border:1px solid #9ebbc2;border-radius:8px;padding:11px;background:#fff}.form{display:grid;gap:11px}.form label{font-weight:800}.form textarea{min-height:95px;resize:vertical}
     .detail-head{display:flex;justify-content:space-between;align-items:start;gap:10px}.detail-head h2{margin-bottom:5px}.facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}.fact{background:#f4f8f8;border-radius:9px;padding:10px}.fact span{display:block;color:var(--muted);font-size:12px}.fact b{display:block;margin-top:4px;word-break:break-word}
-    .empty{background:#f4f8f8;border-radius:9px;padding:18px;color:var(--muted)}.login-wrap{min-height:100vh;display:grid;place-items:center;padding:20px}.login{width:min(440px,100%);background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px}.login h1{margin-bottom:6px}.login input{width:100%;padding:13px;border:1px solid #9ebbc2;border-radius:9px;margin:16px 0 10px}
+    .empty{background:#f4f8f8;border-radius:9px;padding:18px;color:var(--muted)}.login-wrap{min-height:100vh;display:grid;place-items:center;padding:20px}.login{width:min(440px,100%);background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px}.login h1{margin-bottom:6px}.code-row{display:grid;grid-template-columns:minmax(0,1fr) 84px;gap:8px;margin:16px 0 10px}.login .code-row input{width:100%;min-width:0;padding:13px;border:1px solid #9ebbc2;border-radius:9px;margin:0}.admin-code-mask{-webkit-text-security:disc}.code-row .btn{min-width:84px}
     .version{text-align:center;color:var(--muted);font-size:12px;padding:18px}
     @media(max-width:1050px){.app{grid-template-columns:190px 1fr}.metrics{grid-template-columns:repeat(3,1fr)}.grid{grid-template-columns:1fr}.side{padding:16px 10px}.brand{font-size:19px}}
     @media(max-width:760px){.app{display:block}.side{height:auto;position:static;padding:12px}.brand,.sub,.account{display:none}.nav{display:flex;overflow-x:auto;gap:6px}.nav button,.nav a{white-space:nowrap;padding:11px}.top{position:static;padding:13px}.top-actions .btn:first-child{display:none}.content{padding:10px}.metrics{grid-template-columns:repeat(2,1fr)}.metric b{font-size:25px}.filters{grid-template-columns:1fr}.facts{grid-template-columns:1fr}.grid{display:block}.grid>.card{margin-bottom:10px}}
@@ -36,7 +36,7 @@
   <section id="loginView" class="login-wrap">
     <form id="loginForm" class="login">
       <h1>DPRO SODAN</h1><div class="muted">iPad管理画面</div>
-      <input id="adminCode" type="password" inputmode="numeric" autocomplete="current-password" placeholder="管理コード" aria-label="管理コード">
+      <div class="code-row"><input id="adminCode" class="admin-code-mask" type="text" inputmode="numeric" autocomplete="off" name="sodan_ipad_admin_code_input" data-lpignore="true" data-1p-ignore="true" autocapitalize="off" spellcheck="false" maxlength="32" placeholder="管理コード" aria-label="管理コード"><button id="clearCode" class="btn" type="button">削除</button></div>
       <button class="btn primary" style="width:100%" type="submit">ログイン</button>
       <div id="loginStatus" class="status"></div>
     </form>
@@ -159,12 +159,13 @@
     $('loginView').classList.add('hidden');$('appView').classList.remove('hidden')
   }
   $('loginForm').onsubmit=async e=>{e.preventDefault();try{await login($('adminCode').value.trim());await initial()}catch(err){status('loginStatus',err.message,'error')}};
+  $('clearCode').onclick=()=>{$('adminCode').value='';$('adminCode').focus()};
   $('logout').onclick=()=>{sessionStorage.removeItem('sodan_owner_token');location.reload()};
   $('pcLink').onclick=()=>location.href='owner.html';
   $('refresh').onclick=()=>switchView(state.view);
   $('searchInquiries').onclick=loadInquiries;$('searchCases').onclick=loadCases;
   document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>switchView(b.dataset.view));
-  $('version').textContent=cfg.WEB_VERSION||'SODAN-11-WEB-20260730';
+  $('version').textContent=cfg.WEB_VERSION||cfg.version||'SODAN-11-R1-WEB-20260730';
   (async()=>{if(await validate())await initial()})()
 })();
 </script>
